@@ -1,3 +1,11 @@
+// /
+// 	database
+// 		-database.go
+// 	datecalculator
+// 		-datecalculator.go
+// 	main.go
+// 	go.mod
+
 package main
 
 import (
@@ -8,6 +16,7 @@ import (
 
 	"github.com/jedyEvgeny/YPGoFinalJob/database"
 	dCalc "github.com/jedyEvgeny/YPGoFinalJob/datecalculator"
+	task "github.com/jedyEvgeny/YPGoFinalJob/tasks"
 )
 
 const Port = ":7540"
@@ -18,6 +27,8 @@ func main() {
 	port := determinePort()
 	http.Handle("/", http.FileServer(http.Dir(WebDir)))
 	http.HandleFunc("/api/nextdate", nextDateHandler)
+	http.HandleFunc("/api/task", task.NewTaskMaker)
+	http.HandleFunc("/api/tasks", task.NewTaskMakerGet)
 	fmt.Println("Сервер запущен на порту", port)
 	http.ListenAndServe(port, nil)
 }
@@ -34,7 +45,6 @@ func nextDateHandler(w http.ResponseWriter, r *http.Request) {
 	nowStr := r.FormValue("now")
 	dateStr := r.FormValue("date")
 	repeat := r.FormValue("repeat")
-	// fmt.Println(nowStr, dateStr, repeat)
 	now, err := time.Parse("20060102", nowStr)
 	if err != nil {
 		http.Error(w, "Ошибка преобразования параметра now", http.StatusBadRequest)

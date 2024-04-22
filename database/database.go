@@ -34,7 +34,7 @@ func createSchedulerTable(db *sql.DB) {
 	createTableSQL := `
 	  CREATE TABLE IF NOT EXISTS scheduler (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		date DATE,
+		date TEXT,
 		title TEXT,
 		comment TEXT,
 		repeat TEXT(128)
