@@ -29,6 +29,7 @@ func main() {
 	http.HandleFunc("/api/nextdate", nextDateHandler)
 	http.HandleFunc("/api/task", task.NewTaskMaker)
 	http.HandleFunc("/api/tasks", task.NewTaskMakerGet)
+	http.HandleFunc("/api/task/done", task.MarkTaskAsDone)
 	fmt.Println("Сервер запущен на порту", port)
 	http.ListenAndServe(port, nil)
 }
