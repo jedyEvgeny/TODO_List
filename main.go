@@ -1,11 +1,3 @@
-// /
-// 	database
-// 		-database.go
-// 	datecalculator
-// 		-datecalculator.go
-// 	main.go
-// 	go.mod
-
 package main
 
 import (
