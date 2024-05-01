@@ -95,24 +95,6 @@ func UpdateTaskByID(id, date, title, comment, repeat string) error {
 	return nil
 }
 
-// Проверка наличия задачи с указанным ID в базе данных
-func TaskExists(taskID string) bool {
-	dbFile := determineDbFile()
-	db, err := sql.Open("sqlite", dbFile)
-	if err != nil {
-		return false
-	}
-	defer db.Close()
-
-	var count int
-	err = db.QueryRow("SELECT COUNT(id) FROM scheduler WHERE id = ?", taskID).Scan(&count)
-	if err != nil {
-		return false
-	}
-
-	return count > 0
-}
-
 func UpdateDayForTask(id, date string) error {
 	db, err := sql.Open("sqlite", "scheduler.db")
 	if err != nil {

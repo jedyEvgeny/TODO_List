@@ -48,6 +48,7 @@ func NewTaskMakerGet(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Реализация обработчика /api/task/done
 func MarkTaskAsDone(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":

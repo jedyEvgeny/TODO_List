@@ -15,7 +15,11 @@ const Port = ":7540"
 const WebDir = "./web"
 
 func main() {
-	database.InitDatabase()
+	err := database.InitDatabase()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	port := determinePort()
 	http.Handle("/", http.FileServer(http.Dir(WebDir)))
 	http.HandleFunc("/api/nextdate", nextDateHandler)

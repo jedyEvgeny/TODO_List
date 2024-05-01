@@ -142,12 +142,9 @@ func updateTask(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, `{"error":"не указан идентификатор задачи"}`)
 		return
 	}
-	if _, err := strconv.Atoi(task.ID); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintln(w, `{"error":"идентефикатор задачи должен быть числом"}`)
-		return
-	}
-	if !database.TaskExists(task.ID) {
+
+	_, err = database.GetTaskByID(task.ID)
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintln(w, `{"error":"указанный идентификатор задачи не найден в базе данных"}`)
 		return
@@ -237,7 +234,7 @@ func deleteTaskByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	id := r.URL.Query().Get("id")
 	if id == "" {
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(`{"error": "отсутствует ID"}`))
 		return
 	}
@@ -248,7 +245,7 @@ func deleteTaskByID(w http.ResponseWriter, r *http.Request) {
 	}
 	err := database.DeleteTask(id)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(`{"error": "ошибка при удалении задачи"}`))
 		return
 	}

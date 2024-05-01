@@ -10,16 +10,22 @@ import (
 
 const DbFileDefault = "scheduler.db"
 
-func InitDatabase() {
+func InitDatabase() error {
 	dbFile := determineDbFile()
 	db, err := sql.Open("sqlite", dbFile)
 	if err != nil {
 		fmt.Println("Ошибка открытия базы данных:", err)
-		return
+		return fmt.Errorf("ошибка открытия базы данных: %v", err)
 	}
 	defer db.Close()
 
-	createSchedulerTable(db)
+	err = createSchedulerTable(db)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func determineDbFile() string {
@@ -30,7 +36,7 @@ func determineDbFile() string {
 	return DbFileDefault
 }
 
-func createSchedulerTable(db *sql.DB) {
+func createSchedulerTable(db *sql.DB) error {
 	createTableSQL := `
 	  CREATE TABLE IF NOT EXISTS scheduler (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,14 +46,15 @@ func createSchedulerTable(db *sql.DB) {
 		repeat TEXT(128)
 	  );
 
-	  CREATE INDEX idx_date ON scheduler (date);
+	  CREATE INDEX IF NOT EXISTS idx_date ON scheduler (date);
 	`
 
 	_, err := db.Exec(createTableSQL)
 	if err != nil {
 		fmt.Println("Ошибка создания таблицы:", err)
-		return
+		return fmt.Errorf("ошибка создания таблицы: %v", err)
 	}
 
 	fmt.Println("База данных успешно создана")
+	return nil
 }
